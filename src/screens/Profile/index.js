@@ -2,6 +2,6 @@ import React from 'react';
 
 import { Container } from './styles';
 
-const Main = () => <Container />;
+const Profile = () => <Container />;
 
-export default Main;
+export default Profile;
