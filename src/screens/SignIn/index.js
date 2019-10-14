@@ -1,15 +1,23 @@
 import React, { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import logo from '~/assets/logo.png';
+import { signInRequest } from '~/store/modules/auth/actions';
+
 import Background from '~/components/Background';
-
+import logo from '~/assets/logo.png';
 import * as S from './styles';
 
-const SignIn = () => {
+const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const pwdRef = useRef();
+  const dispatch = useDispatch();
+
+  function handleLogin() {
+    dispatch(signInRequest(email, password));
+  }
 
   return (
     <Background>
@@ -35,16 +43,23 @@ const SignIn = () => {
           value={password}
           ref={pwdRef}
           returnKeyType="send"
+          onSubmitEditing={handleLogin}
         />
 
-        <S.SubmitButton>Entrar</S.SubmitButton>
+        <S.SubmitButton onPress={handleLogin}>Entrar</S.SubmitButton>
 
-        <S.SignLink>
+        <S.SignLink onPress={() => navigation.navigate('SignUp')}>
           <S.SignLinkText>Criar conta grátis</S.SignLinkText>
         </S.SignLink>
       </S.Form>
     </Background>
   );
+};
+
+SignIn.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default SignIn;
