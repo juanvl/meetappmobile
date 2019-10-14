@@ -6,7 +6,7 @@ import { signInRequest } from '~/store/modules/auth/actions';
 
 import Background from '~/components/Background';
 import logo from '~/assets/logo.png';
-import * as S from './styles';
+import * as S from '~/styles/Sign';
 
 const SignIn = ({ navigation }) => {
   const [email, setEmail] = useState('');

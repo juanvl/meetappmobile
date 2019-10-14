@@ -30,6 +30,8 @@ export function* signUpRequest({ payload }) {
       password,
     });
 
+    Alert.alert('Sucesso', 'Sua conta foi criada :)');
+
     yield put(signUpSuccess(res.data));
   } catch (error) {
     Alert.alert(
