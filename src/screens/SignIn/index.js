@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { signInRequest } from '~/store/modules/auth/actions';
@@ -14,6 +14,7 @@ const SignIn = ({ navigation }) => {
 
   const pwdRef = useRef();
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.auth.loading);
 
   function handleLogin() {
     dispatch(signInRequest(email, password));
@@ -46,7 +47,9 @@ const SignIn = ({ navigation }) => {
           onSubmitEditing={handleLogin}
         />
 
-        <S.SubmitButton onPress={handleLogin}>Entrar</S.SubmitButton>
+        <S.SubmitButton loading={loading} onPress={handleLogin}>
+          Entrar
+        </S.SubmitButton>
 
         <S.SignLink onPress={() => navigation.navigate('SignUp')}>
           <S.SignLinkText>Criar conta grátis</S.SignLinkText>
