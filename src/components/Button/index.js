@@ -9,7 +9,7 @@ export default function Button(props) {
       {props.loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
-        <S.BtnText>{props.children}</S.BtnText>
+        <S.BtnText fontSize={props.fontSize}>{props.children}</S.BtnText>
       )}
     </S.Btn>
   );
