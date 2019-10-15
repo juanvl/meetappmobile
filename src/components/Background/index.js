@@ -1,8 +1,21 @@
-import styled from 'styled-components/native';
-import LinearGradient from 'react-native-linear-gradient';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-export default styled(LinearGradient).attrs({
-  colors: ['#22202C', '#402845'],
-})`
-  flex: 1;
-`;
+import Header from '~/components/Header';
+import * as S from './styles';
+
+export default function Background({ children }) {
+  const signed = useSelector(state => state.auth.signed);
+
+  return (
+    <S.Container>
+      {signed && <Header />}
+      {children}
+    </S.Container>
+  );
+}
+
+Background.propTypes = {
+  children: PropTypes.element.isRequired,
+};
