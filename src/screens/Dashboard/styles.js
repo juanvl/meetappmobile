@@ -4,4 +4,6 @@ export const Container = styled.View`
   flex: 1;
 `;
 
-export const Meetups = styled.FlatList``;
+export const Meetups = styled.FlatList`
+  padding: 20px;
+`;
