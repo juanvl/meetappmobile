@@ -8,7 +8,7 @@ import * as S from './styles';
 
 export default function Meetup({ data, onActionButtonPressed }) {
   const dateFormatted = useMemo(() => {
-    return format(parseISO(data.date), "dd 'de' MMMM', às 'H'h'", {
+    return format(parseISO(data.date), "dd 'de' MMMM', às 'HH'h'", {
       locale: pt,
     });
   }, [data.date]);
