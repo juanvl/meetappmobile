@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
+import { format, parseISO } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import * as S from './styles';
 
-export default function Meetup({ data }) {
-  function handleSubscribe() {}
+export default function Meetup({ data, onActionButtonPressed }) {
+  const dateFormatted = useMemo(() => {
+    return format(parseISO(data.date), "dd 'de' MMMM', às 'H'h'", {
+      locale: pt,
+    });
+  }, [data.date]);
 
   return (
     <S.Container>
@@ -15,7 +22,7 @@ export default function Meetup({ data }) {
 
         <S.Info>
           <Icon name="event" size={14} color="#999" />
-          <S.InfoText>{data.date}</S.InfoText>
+          <S.InfoText>{dateFormatted}</S.InfoText>
         </S.Info>
         <S.Info>
           <Icon name="place" size={14} color="#999" />
@@ -26,10 +33,15 @@ export default function Meetup({ data }) {
           <S.InfoText>{data.User.name}</S.InfoText>
         </S.Info>
 
-        <S.SubscribeButton onPress={handleSubscribe}>
+        <S.SubscribeButton onPress={() => onActionButtonPressed(data.id)}>
           Realizar inscrição
         </S.SubscribeButton>
       </S.Content>
     </S.Container>
   );
 }
+
+Meetup.propTypes = {
+  data: PropTypes.object.isRequired,
+  onActionButtonPressed: PropTypes.func.isRequired,
+};

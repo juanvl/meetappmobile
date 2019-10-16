@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { updateProfileRequest } from '~/store/modules/user/actions';
 import { signOut } from '~/store/modules/auth/actions';
 import Background from '~/components/Background';
-import Header from '~/components/Header';
 import * as S from './styles';
 
 const schema = Yup.object().shape({
