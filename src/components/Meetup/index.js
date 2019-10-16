@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import * as S from './styles';
 
-export default function Meetup({ data, onActionButtonPressed }) {
+export default function Meetup({ data, onActionButtonPressed, subscribed }) {
   const dateFormatted = useMemo(() => {
     return format(parseISO(data.date), "dd 'de' MMMM', às 'HH'h'", {
       locale: pt,
@@ -33,8 +33,11 @@ export default function Meetup({ data, onActionButtonPressed }) {
           <S.InfoText>{data.User.name}</S.InfoText>
         </S.Info>
 
-        <S.SubscribeButton onPress={() => onActionButtonPressed(data.id)}>
-          Realizar inscrição
+        <S.SubscribeButton
+          onPress={() => onActionButtonPressed(data.id)}
+          bgColor={subscribed && '#D44059'}
+        >
+          {subscribed ? 'Cancelar' : 'Realizar'} inscrição
         </S.SubscribeButton>
       </S.Content>
     </S.Container>
