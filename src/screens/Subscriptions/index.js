@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import { Alert } from 'react-native';
+import PropTypes from 'prop-types';
+import { withNavigationFocus } from 'react-navigation';
 
 import api from '~/services/api';
 import Meetup from '~/components/Meetup';
 import Background from '~/components/Background';
 import * as S from './styles';
 
-const Subscriptions = ({ navigation }) => {
+const Subscriptions = ({ isFocused }) => {
   const [subs, setSubs] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      const res = await api.get('subscriptions');
-      setSubs(res.data);
-    })();
-  }, []);
+    if (isFocused) {
+      (async () => {
+        const res = await api.get('subscriptions');
+        setSubs(res.data);
+      })();
+    }
+  }, [isFocused]);
 
   async function handleUnsubscribe(meetupId) {
     try {
-      await api.delete(`meetups/${meetupId}/subscriptions`);
+      const subIndex = subs.findIndex(s => s.Meetup.id === meetupId);
+      const subId = subs[subIndex].id;
 
-      navigation.navigate('Subscriptions');
+      await api.delete(`subscriptions/${subId}`);
+
+      const newSubs = [...subs];
+      newSubs.splice(subIndex, 1);
+      setSubs(newSubs);
     } catch (error) {
       Alert.alert('Ops...', error.response.data.error);
     }
@@ -44,4 +54,8 @@ const Subscriptions = ({ navigation }) => {
   );
 };
 
-export default Subscriptions;
+export default withNavigationFocus(Subscriptions);
+
+Subscriptions.propTypes = {
+  isFocused: PropTypes.bool.isRequired,
+};

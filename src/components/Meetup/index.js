@@ -47,4 +47,9 @@ export default function Meetup({ data, onActionButtonPressed, subscribed }) {
 Meetup.propTypes = {
   data: PropTypes.object.isRequired,
   onActionButtonPressed: PropTypes.func.isRequired,
+  subscribed: PropTypes.bool,
+};
+
+Meetup.defaultProps = {
+  subscribed: false,
 };

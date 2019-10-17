@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Alert } from 'react-native';
-import { useSelector } from 'react-redux';
+import { Alert, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { format, subDays, addDays } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import api from '~/services/api';
 import Meetup from '~/components/Meetup';
 import Background from '~/components/Background';
@@ -19,7 +17,6 @@ const Dashboard = ({ navigation }) => {
   }, [date]);
 
   const [meetups, setMeetups] = useState([]);
-  const myUser = useSelector(state => state.user.profile);
 
   useEffect(() => {
     (async () => {
@@ -30,7 +27,7 @@ const Dashboard = ({ navigation }) => {
 
   async function handleSubscribe(meetupId) {
     try {
-      await api.post(`meetups/${meetupId}/subscriptions`);
+      await api.post('subscriptions', { meetupId });
 
       navigation.navigate('Subscriptions');
     } catch (error) {
@@ -63,11 +60,7 @@ const Dashboard = ({ navigation }) => {
           data={meetups}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
-            <>
-              {item.user_id !== myUser.id && !item.past && (
-                <Meetup data={item} onActionButtonPressed={handleSubscribe} />
-              )}
-            </>
+            <Meetup data={item} onActionButtonPressed={handleSubscribe} />
           )}
         />
       </S.Container>
