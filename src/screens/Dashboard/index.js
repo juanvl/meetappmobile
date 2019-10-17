@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { format, subDays, addDays } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import api from '~/services/api';
 import Meetup from '~/components/Meetup';
@@ -17,6 +18,7 @@ const Dashboard = ({ navigation }) => {
   }, [date]);
 
   const [meetups, setMeetups] = useState([]);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -50,11 +52,19 @@ const Dashboard = ({ navigation }) => {
           <TouchableOpacity onPress={handlePrevDay}>
             <Icon name="chevron-left" size={30} color="#fff" />
           </TouchableOpacity>
-          <S.DateText>{dateFormatted}</S.DateText>
+          <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}>
+            <S.DateText>{dateFormatted}</S.DateText>
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleNextDay}>
             <Icon name="chevron-right" size={30} color="#fff" />
           </TouchableOpacity>
         </S.DateNavigation>
+
+        {showDatePicker && (
+          <S.DatePicker>
+            <DateTimePicker value={date} onChange={(e, d) => setDate(d)} />
+          </S.DatePicker>
+        )}
 
         <S.Meetups
           data={meetups}

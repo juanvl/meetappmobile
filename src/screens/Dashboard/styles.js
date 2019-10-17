@@ -18,6 +18,11 @@ export const DateText = styled.Text`
   margin: 0 15px;
 `;
 
+export const DatePicker = styled.View`
+  background-color: #fff;
+  margin: 20px;
+`;
+
 export const Meetups = styled.FlatList`
   padding: 20px;
 `;
