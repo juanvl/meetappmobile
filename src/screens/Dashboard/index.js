@@ -1,5 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Alert,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { format, subDays, addDays } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -19,13 +24,64 @@ const Dashboard = ({ navigation }) => {
 
   const [meetups, setMeetups] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadMore = useCallback(() => {
+    (async () => {
+      const newPage = refreshing ? 1 : page + 1;
+
+      console.tron.log({ refreshing, newPage });
+
+      const res = await api.get('meetups', { params: { date, page: newPage } });
+
+      console.tron.log({ novo: [...meetups, ...res.data] });
+
+      setMeetups([...meetups, ...res.data]);
+      setLoading(false);
+      setRefreshing(false);
+      setPage(newPage);
+    })();
+  }, [date, meetups, page, refreshing]);
+
+  function resetData() {
+    setLoading(true);
+    setMeetups([]);
+    setPage(0);
+  }
 
   useEffect(() => {
-    (async () => {
-      const res = await api.get('meetups', { params: { date } });
-      setMeetups(res.data);
-    })();
-  }, [date]);
+    resetData();
+    loadMore();
+  }, [date]); //eslint-disable-line
+
+  useEffect(() => {
+    if (refreshing) {
+      resetData();
+      loadMore();
+    }
+  }, [refreshing]); //eslint-disable-line
+
+  function refreshList() {
+    resetData();
+    setRefreshing(true);
+  }
+
+  function handlePrevDay() {
+    resetData();
+    setDate(subDays(date, 1));
+  }
+
+  function handleNextDay() {
+    resetData();
+    setDate(addDays(date, 1));
+  }
+
+  function handleDateChange(_, d) {
+    resetData();
+    setDate(d);
+  }
 
   async function handleSubscribe(meetupId) {
     try {
@@ -35,14 +91,6 @@ const Dashboard = ({ navigation }) => {
     } catch (error) {
       Alert.alert('Ops...', error.response.data.error);
     }
-  }
-
-  function handlePrevDay() {
-    setDate(subDays(date, 1));
-  }
-
-  function handleNextDay() {
-    setDate(addDays(date, 1));
   }
 
   return (
@@ -62,17 +110,32 @@ const Dashboard = ({ navigation }) => {
 
         {showDatePicker && (
           <S.DatePicker>
-            <DateTimePicker value={date} onChange={(e, d) => setDate(d)} />
+            <DateTimePicker value={date} onChange={handleDateChange} />
           </S.DatePicker>
         )}
 
-        <S.Meetups
-          data={meetups}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Meetup data={item} onActionButtonPressed={handleSubscribe} />
-          )}
-        />
+        {loading ? (
+          <S.Loading>
+            <ActivityIndicator size="large" color="#fff" />
+          </S.Loading>
+        ) : (
+          <S.Meetups
+            data={meetups}
+            keyExtractor={item => String(item.id)}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={refreshList}
+                tintColor="#fff"
+              />
+            }
+            onEndReachedThreshold={0.01}
+            onEndReached={loadMore}
+            renderItem={({ item }) => (
+              <Meetup data={item} onActionButtonPressed={handleSubscribe} />
+            )}
+          />
+        )}
       </S.Container>
     </Background>
   );

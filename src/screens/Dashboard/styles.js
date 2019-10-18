@@ -23,6 +23,11 @@ export const DatePicker = styled.View`
   margin: 20px;
 `;
 
-export const Meetups = styled.FlatList`
-  padding: 20px;
+export const Loading = styled.View`
+  margin: auto;
 `;
+
+export const Meetups = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+  contentContainerStyle: { padding: 20 },
+})``;
