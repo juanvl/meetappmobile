@@ -32,11 +32,7 @@ const Dashboard = ({ navigation }) => {
     (async () => {
       const newPage = refreshing ? 1 : page + 1;
 
-      console.tron.log({ refreshing, newPage });
-
       const res = await api.get('meetups', { params: { date, page: newPage } });
-
-      console.tron.log({ novo: [...meetups, ...res.data] });
 
       setMeetups([...meetups, ...res.data]);
       setLoading(false);
@@ -93,6 +89,30 @@ const Dashboard = ({ navigation }) => {
     }
   }
 
+  const listContent = meetups.length ? (
+    <S.Meetups
+      data={meetups}
+      keyExtractor={item => String(item.id)}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={refreshList}
+          tintColor="#fff"
+        />
+      }
+      onEndReachedThreshold={0.01}
+      onEndReached={loadMore}
+      renderItem={({ item }) => (
+        <Meetup data={item} onActionButtonPressed={handleSubscribe} />
+      )}
+    />
+  ) : (
+    <S.Empty>
+      <S.SadFace>:(</S.SadFace>
+      <S.EmptyMsg>Não há nenhum meetup nesta data</S.EmptyMsg>
+    </S.Empty>
+  );
+
   return (
     <Background>
       <S.Container>
@@ -119,22 +139,7 @@ const Dashboard = ({ navigation }) => {
             <ActivityIndicator size="large" color="#fff" />
           </S.Loading>
         ) : (
-          <S.Meetups
-            data={meetups}
-            keyExtractor={item => String(item.id)}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={refreshList}
-                tintColor="#fff"
-              />
-            }
-            onEndReachedThreshold={0.01}
-            onEndReached={loadMore}
-            renderItem={({ item }) => (
-              <Meetup data={item} onActionButtonPressed={handleSubscribe} />
-            )}
-          />
+          listContent
         )}
       </S.Container>
     </Background>

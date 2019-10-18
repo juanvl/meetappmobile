@@ -38,17 +38,24 @@ const Subscriptions = ({ isFocused }) => {
   return (
     <Background>
       <S.Container>
-        <S.Meetups
-          data={subs}
-          keyExtractor={item => String(item.id)}
-          renderItem={({ item }) => (
-            <Meetup
-              data={item.Meetup}
-              subscribed
-              onActionButtonPressed={handleUnsubscribe}
-            />
-          )}
-        />
+        {subs.length ? (
+          <S.Meetups
+            data={subs}
+            keyExtractor={item => String(item.id)}
+            renderItem={({ item }) => (
+              <Meetup
+                data={item.Meetup}
+                subscribed
+                onActionButtonPressed={handleUnsubscribe}
+              />
+            )}
+          />
+        ) : (
+          <S.Empty>
+            <S.SadFace>:(</S.SadFace>
+            <S.EmptyMsg>Você não está inscrito em nenhum Meetup...</S.EmptyMsg>
+          </S.Empty>
+        )}
       </S.Container>
     </Background>
   );
